@@ -1,0 +1,26 @@
+[
+    {
+        "ID": 0,
+        "class": "Farmer",
+        "money" : 100,
+        "price_beliefs": {
+            "Food": {
+                "low": 0,
+                "high": 100
+            },
+            "Tools": {
+                "low": 50,
+                "high": 75
+            }
+        }
+        ,
+        "inventory": {
+            "Food": {
+                "amount": 5
+            },
+            "Tools": {
+                "amount": 1
+            }
+}
+    }
+]

@@ -1,0 +1,2 @@
+class Bazaar():
+    pass
