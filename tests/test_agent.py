@@ -1,4 +1,5 @@
 import json
+import os
 import unittest, nose
 from unittest.mock import patch, Mock, MagicMock, PropertyMock
 from Agent import Agent
@@ -11,7 +12,7 @@ class TestAgent(unittest.TestCase):
             self.agents = []
             Bazaar = Mock()
             for e in data:
-                self.agents.append(Agent(e, Bazaar()))
+                self.agents.append(Agent(Bazaar(), **e))
 
     def test_price_of(self):
         agent = self.agents[0]

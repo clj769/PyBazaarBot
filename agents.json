@@ -1,7 +1,6 @@
 [
     {
-        "ID": 0,
-        "class": "Farmer",
+        "occupation": "Farmer",
         "money" : 100,
         "price_beliefs": {
             "Food": {

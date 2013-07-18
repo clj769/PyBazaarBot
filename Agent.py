@@ -1,25 +1,36 @@
 import json
 import random
+from bazaar import Bazaar
 
 
 class Agent():
-    def __init__(self, dict, bazaar):
-        self.dict = dict
-        self.price_beliefs = dict['price_beliefs']
-        self.observed_trades = {}
-        self.money = dict['money']
-        self.inventory = dict['inventory']
+    def __init__(self, bazaar, occupation=None, price_beliefs=None, observed_trades=None, money=100, inventory=None,
+                 inventory_space=100):
+        """
+
+        :param dict:
+        :param bazaar: the Bazaar where the Agent is trading
+        """
+        self.occupation = occupation
+        self.price_beliefs = price_beliefs
+        self.observed_trades = observed_trades
+        self.money = money
+        self.inventory = inventory
         self.bazaar = bazaar
-        self.inventory_space = 100
+        self.inventory_space = inventory_space
 
     def __repr__(self):
-        return str(self.dict)
+        #Todo: fix string representation
+        return str(self.money)
 
     @property
     def available_inventory_space(self):
         occupied_space = sum(x[1] for items in self.inventory.values()
                              for x in items.items() if x[0]=='amount' )
         return self.inventory_space - occupied_space
+
+    def perform_production(self):
+        pass
 
     def create_bid(self, commodity, limit):
         ideal = self.determine_purchase_quantity(commodity)
@@ -82,9 +93,7 @@ class Agent():
 if __name__ == "__main__":
     with open('agents.json', 'r') as file:
         data = json.loads(file.read())
+        paris = Bazaar()
         agents = []
-        for e in data:
-            agents.append(Agent(e))
-
-        for a in agents:
-            print(a)
+        for element in data:
+            agents.append(Agent(paris, **element))
