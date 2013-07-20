@@ -4,7 +4,14 @@ from bazaar import Bazaar
 
 
 class Agent():
-    def __init__(self, bazaar, occupation=None, price_beliefs=None, observed_trades=None, money=100, inventory=None,
+    weights = {
+        'Tools': 1,
+        'Coins': 0,
+        'Food': 1
+    }
+
+    def __init__(self, bazaar, occupation=None, price_beliefs=None,
+                 observed_trades=None, money=100, inventory=None,
                  inventory_space=100):
         """
 
@@ -15,7 +22,12 @@ class Agent():
         self.price_beliefs = price_beliefs
         self.observed_trades = observed_trades
         self.money = money
-        self.inventory = inventory
+
+        if inventory:
+            self.inventory = inventory
+        else:
+            self.inventory = {}
+
         self.bazaar = bazaar
         self.inventory_space = inventory_space
 
@@ -25,8 +37,10 @@ class Agent():
 
     @property
     def available_inventory_space(self):
-        occupied_space = sum(x[1] for items in self.inventory.values()
-                             for x in items.items() if x[0]=='amount' )
+        occupied_space = 0
+        for name, properties in self.inventory.items():
+            occupied_space += properties['amount'] * self.weights[name]
+
         return self.inventory_space - occupied_space
 
     def perform_production(self):
@@ -82,7 +96,7 @@ class Agent():
     def favorability(self, mean, trading_low, trading_high):
         mean -= trading_low
         trading_high -= trading_low
-        return mean/trading_high
+        return mean / trading_high
 
     def excess_inventory(self, commodity):
         current = self.inventory[commodity]['amount']
