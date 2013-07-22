@@ -1,3 +1,4 @@
+from behave import *
 from mock import Mock
 from Agent import Agent
 

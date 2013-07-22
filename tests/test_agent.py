@@ -1,13 +1,12 @@
 import json
-import os
 import unittest
-from mock import patch, Mock, MagicMock, PropertyMock
+from unittest.mock import Mock, MagicMock
 from Agent import Agent
-from bazaar import Bazaar
+
 
 class TestAgent(unittest.TestCase):
     def setUp(self):
-        with open('tests/test_data.json', 'r') as file:
+        with open('test_data.json', 'r') as file:
             data = json.loads(file.read())
             self.agents = []
             Bazaar = Mock()

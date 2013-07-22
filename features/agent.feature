@@ -8,17 +8,13 @@ Feature: basic economic agent
     When given 5 Tools
     Then the Agent owns 5 Tools
 
-    Scenario: Agent owns money
-    Given the Agent
-    When given 50 Coins
-    Then the Agent owns 50 Coins
-
     Scenario: Agent has inventory space
     Given the Agent has 100 inventory space
     When given 5 Tools
-    Then the Agent has 95 inventory space left
+    And given 1 Food
+    Then the Agent has 94 inventory space left
 
-    Scenario: Coins weigh nothing
+    Scenario: Some things can weigh nothing
     Given the Agent has 1 inventory space
     When given 100 Coins
     Then the Agent has 1 inventory space left

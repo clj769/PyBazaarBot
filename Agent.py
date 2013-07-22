@@ -1,6 +1,6 @@
 import json
 import random
-from bazaar import Bazaar
+from Bazaar import Bazaar
 
 
 class Agent():
@@ -15,12 +15,16 @@ class Agent():
                  inventory_space=100):
         """
 
-        :param dict:
+
         :param bazaar: the Bazaar where the Agent is trading
         """
         self.occupation = occupation
         self.price_beliefs = price_beliefs
-        self.observed_trades = observed_trades
+        if observed_trades:
+            self.observed_trades = observed_trades
+        else:
+            self.observed_trades = {}
+
         self.money = money
 
         if inventory:
@@ -49,8 +53,9 @@ class Agent():
     def create_bid(self, commodity, limit):
         ideal = self.determine_purchase_quantity(commodity)
 
-        bid = {'bid_price': self.price_of(commodity),
-               'quantity_to_buy': min(ideal, limit)}
+        bid = {'price': self.price_of(commodity),
+               'quantity_to_buy': min(ideal, limit),
+               'commodity': commodity}
 
         if bid['quantity_to_buy'] > 0:
             return bid
@@ -60,8 +65,9 @@ class Agent():
     def create_ask(self, commodity, limit):
         ideal = self.determine_sale_quantity(commodity)
 
-        bid = {'bid_price': self.price_of(commodity),
-               'quantity_to_sell': max(ideal, limit)}
+        bid = {'price': self.price_of(commodity),
+               'quantity_to_sell': max(ideal, limit),
+               'commodity': commodity}
 
         if bid['quantity_to_sell'] > 0:
             return bid
