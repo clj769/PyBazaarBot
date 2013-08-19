@@ -1,6 +1,6 @@
 import json
 import random
-from Bazaar import Bazaar
+from bazaar import Bazaar
 
 
 class Agent():
@@ -54,10 +54,11 @@ class Agent():
         ideal = self.determine_purchase_quantity(commodity)
 
         bid = {'price': self.price_of(commodity),
-               'quantity_to_buy': min(ideal, limit),
-               'commodity': commodity}
+               'amount': min(ideal, limit),
+               'commodity': commodity,
+               'buyer': self}
 
-        if bid['quantity_to_buy'] > 0:
+        if bid['amount'] > 0:
             return bid
 
         return None
@@ -66,10 +67,11 @@ class Agent():
         ideal = self.determine_sale_quantity(commodity)
 
         bid = {'price': self.price_of(commodity),
-               'quantity_to_sell': max(ideal, limit),
-               'commodity': commodity}
+               'amount': max(ideal, limit),
+               'commodity': commodity,
+               'seller': self}
 
-        if bid['quantity_to_sell'] > 0:
+        if bid['amount'] > 0:
             return bid
 
         return None
@@ -108,6 +110,20 @@ class Agent():
         current = self.inventory[commodity]['amount']
         needed = self.inventory[commodity]['minimal']
         return current - needed
+        
+    def trade(self, other_agent, commodity, amount):
+        print(self.inventory[commodity], other_agent.inventory[commodity])
+        self.inventory[commodity]['amount'] -= amount
+        current_amount = other_agent.inventory.get(commodity, {}).get('amount',0)
+        other_agent.inventory[commodity] = {'amount': current_amount + amount}
+        print(self.inventory[commodity], other_agent.inventory[commodity])
+        
+    def pay(self, other_agent, amount):
+        print(self.inventory['coins'], other_agent.inventory['coins'])
+        self.inventory['coins']['amount'] -= amount
+        current_amount = other_agent.inventory.get('coins', {}).get('amount', 0)
+        other_agent.inventory['coins'] = {'amount': current_amount + amount}
+        print(self.inventory['coins'], other_agent.inventory['coins'])
 
 
 if __name__ == "__main__":

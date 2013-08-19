@@ -1,7 +1,7 @@
 import json
 import unittest
 from unittest.mock import Mock, MagicMock
-from Agent import Agent
+from agent import Agent
 
 
 class TestAgent(unittest.TestCase):

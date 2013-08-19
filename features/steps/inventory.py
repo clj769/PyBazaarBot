@@ -1,6 +1,6 @@
 from behave import *
 from mock import Mock
-from Agent import Agent
+from agent import Agent
 
 
 @given('the Agent')
