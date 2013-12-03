@@ -1,16 +1,16 @@
 import random
 
 
-class Bazaar():
+class Bazaar(object):
     def __init__(self):
         self.bid_book = []
         self.ask_book = []
 
     def register_ask(self, ask):
-        self.bid_book.append(ask)
+        self.ask_book.append(ask)
 
     def register_bid(self, bid):
-        self.ask_book.append(bid)
+        self.bid_book.append(bid)
 
     def update(self):
         self.resolve_offers()
@@ -25,7 +25,7 @@ class Bazaar():
         while self.bid_book and self.ask_book:
             bid = self.bid_book.pop()
             ask = self.ask_book.pop()
-            
+
             if bid['price'] >= ask['price']:
                 remaining_bid, remaining_ask = self.resolve_offer(bid, ask)
 
@@ -37,14 +37,11 @@ class Bazaar():
                 break
 
     def resolve_offer(self, bid, ask):
-        buyer = bid['buyer']
-        seller = ask['seller']
-        
         trade_price = (bid['price'] + ask['price']) / 2.0
         trade_amount = min(bid['amount'], ask['amount'])
-        
-        seller.trade(buyer, bid['commodity'], trade_amount)
-        buyer.pay(seller, trade_amount*trade_price)
+
+        ask['seller'].trade(bid['buyer'], bid['commodity'], trade_amount)
+        bid['buyer'].pay(ask['seller'], trade_amount*trade_price)
 
         if bid['amount'] == trade_amount:
             bid = None

@@ -73,3 +73,8 @@ class TestAgent(unittest.TestCase):
         agent = self.agents[0]
         result = agent.excess_inventory('Food')
         self.assertEqual(result, 5-2)
+        
+    def test_zero_bid_results_in_no_bid(self):
+        agent = self.agents[0]
+        result = agent.create_bid('Food', 0)
+        self.assertNone(result)

@@ -3,7 +3,7 @@ import random
 from bazaar import Bazaar
 
 
-class Agent():
+class Agent(object):
     weights = {
         'Tools': 1,
         'Coins': 0,
@@ -66,13 +66,13 @@ class Agent():
     def create_ask(self, commodity, limit):
         ideal = self.determine_sale_quantity(commodity)
 
-        bid = {'price': self.price_of(commodity),
+        ask = {'price': self.price_of(commodity),
                'amount': max(ideal, limit),
                'commodity': commodity,
                'seller': self}
 
-        if bid['amount'] > 0:
-            return bid
+        if ask['amount'] > 0:
+            return ask
 
         return None
 
@@ -112,18 +112,14 @@ class Agent():
         return current - needed
         
     def trade(self, other_agent, commodity, amount):
-        print(self.inventory[commodity], other_agent.inventory[commodity])
         self.inventory[commodity]['amount'] -= amount
         current_amount = other_agent.inventory.get(commodity, {}).get('amount',0)
         other_agent.inventory[commodity] = {'amount': current_amount + amount}
-        print(self.inventory[commodity], other_agent.inventory[commodity])
         
     def pay(self, other_agent, amount):
-        print(self.inventory['coins'], other_agent.inventory['coins'])
         self.inventory['coins']['amount'] -= amount
         current_amount = other_agent.inventory.get('coins', {}).get('amount', 0)
         other_agent.inventory['coins'] = {'amount': current_amount + amount}
-        print(self.inventory['coins'], other_agent.inventory['coins'])
 
 
 if __name__ == "__main__":
