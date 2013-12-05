@@ -18,6 +18,8 @@ class Agent(object):
 
         :param bazaar: the Bazaar where the Agent is trading
         """
+        #TODO: update price beliefs
+        #TODO: update observed trades
         self.occupation = occupation
         self.price_beliefs = price_beliefs
         if observed_trades:
@@ -83,14 +85,17 @@ class Agent(object):
     def determine_purchase_quantity(self, commodity):
         mean = self.bazaar.get_mean_price_of(commodity)
         trading_low, trading_high = self.observed_trading_range(commodity)
-        favorability = 1 - self.favorability(mean, trading_low, trading_high)
+
         #The lower the mean in the range, the more favorable it is
+        favorability = 1 - self.favorability(mean, trading_low, trading_high)
+
         amount_to_buy = favorability * self.available_inventory_space
         return amount_to_buy
 
     def determine_sale_quantity(self, commodity):
         mean = self.bazaar.get_mean_price_of(commodity)
         trading_low, trading_high = self.observed_trading_range(commodity)
+
         favorability = self.favorability(mean, trading_low, trading_high)
         amount_to_sell = favorability * self.excess_inventory(commodity)
         return amount_to_sell
@@ -115,12 +120,16 @@ class Agent(object):
         self.inventory[commodity]['amount'] -= amount
         current_amount = other_agent.inventory.get(commodity, {}).get('amount',0)
         other_agent.inventory[commodity] = {'amount': current_amount + amount}
+        #TODO: register observed trades and prices
         
     def pay(self, other_agent, amount):
         self.inventory['coins']['amount'] -= amount
         current_amount = other_agent.inventory.get('coins', {}).get('amount', 0)
         other_agent.inventory['coins'] = {'amount': current_amount + amount}
 
+    def update(self):
+        self.perform_production()
+        self.generate_offers()
 
 if __name__ == "__main__":
     with open('agents.json', 'r') as file:
