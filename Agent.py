@@ -158,6 +158,29 @@ class Farmer(Agent):
             self.inventory['Wood'] = {'amount': wood_amount - 1}
             self.inventory['Food'] = {'amount': food_amount + 2}
 
+
+class Miner(Agent):
+    def __init__(self, bazaar=None,
+                 name=None,
+                 price_beliefs=None,
+                 observed_trades=None,
+                 inventory=None,
+                 inventory_space=100):
+        super(Miner, self).__init__(bazaar=bazaar, name=name, occupation='Miner', price_beliefs=price_beliefs,
+                                     observed_trades=observed_trades, inventory=inventory,
+                                     inventory_space=inventory_space)
+
+    def update(self):
+        super(Miner, self).update()
+        self.perform_production()
+
+    def perform_production(self):
+        ore_amount = self.inventory.get('Ore', {}).get('amount', 0)
+        food_amount = self.inventory.get('Food', {}).get('amount', 0)
+        if food_amount:
+            self.inventory['Ore'] = {'amount': ore_amount + 2}
+            self.inventory['Food'] = {'amount': food_amount - 1}
+
 if __name__ == "__main__":
     with open('agents.json', 'r') as file:
         data = json.loads(file.read())
