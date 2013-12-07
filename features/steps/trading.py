@@ -4,7 +4,7 @@ from agent import Agent
 from bazaar import Bazaar
 
 
-@given('a bazaar with two agents')
+@given('a bazaar where two agents trade')
 def step_impl(context):
     context.bazaar = Bazaar()
     context.buyer = Agent(context.bazaar)
