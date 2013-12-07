@@ -35,3 +35,17 @@ class TestWorkers(unittest.TestCase):
         f.perform_production()
         wood_amount = f.inventory['Wood']['amount']
         self.assertEqual(wood_amount, 1)
+
+    def test_blacksmith_production(self):
+        f = Agent(occupation='blacksmith')
+        f.inventory['Metal'] = {'amount': 1}
+        f.perform_production()
+        tools_amount = f.inventory['Tools']['amount']
+        self.assertEqual(tools_amount, 1)
+
+    def test_blacksmith_production_whole(self):
+        f = Agent(occupation='blacksmith')
+        f.inventory['Metal'] = {'amount': 10}
+        f.perform_production()
+        tools_amount = f.inventory['Tools']['amount']
+        self.assertEqual(tools_amount, 10)

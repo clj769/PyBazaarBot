@@ -1,7 +1,7 @@
 import json
 import random
 from bazaar import Bazaar
-from strategies import farming, mining, nothing, woodcutting
+from strategies import farming, mining, nothing, woodcutting, blacksmithing, refining
 import types
 
 
@@ -28,6 +28,10 @@ class Agent(object):
             self.perform_production = types.MethodType(mining, self)
         elif occupation == 'woodcutter':
             self.perform_production = types.MethodType(woodcutting, self)
+        elif occupation == 'blacksmith':
+            self.perform_production = types.MethodType(blacksmithing, self)
+        elif occupation == 'refiner':
+            self.perform_production = types.MethodType(refining, self)
         else:
             self.perform_production = types.MethodType(nothing, self)
 
