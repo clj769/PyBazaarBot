@@ -1,7 +1,6 @@
 [
     {
         "occupation": "Farmer",
-        "money" : 100,
         "price_beliefs": {
             "Food": {
                 "low": 0,

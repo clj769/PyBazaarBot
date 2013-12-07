@@ -10,8 +10,8 @@ class Agent(object):
         'Food': 1
     }
 
-    def __init__(self, bazaar, occupation=None, price_beliefs=None,
-                 observed_trades=None, money=100, inventory=None,
+    def __init__(self, bazaar, name=None, occupation=None, price_beliefs=None,
+                 observed_trades=None, inventory=None,
                  inventory_space=100):
         """
 
@@ -20,14 +20,18 @@ class Agent(object):
         """
         #TODO: update price beliefs
         #TODO: update observed trades
+        if name is not None:
+            self.name = name
+        else:
+            self.name = repr(self)
+
         self.occupation = occupation
         self.price_beliefs = price_beliefs
+
         if observed_trades:
             self.observed_trades = observed_trades
         else:
             self.observed_trades = {}
-
-        self.money = money
 
         if inventory:
             self.inventory = inventory
@@ -36,10 +40,6 @@ class Agent(object):
 
         self.bazaar = bazaar
         self.inventory_space = inventory_space
-
-    def __repr__(self):
-        #Todo: fix string representation
-        return str(self.money)
 
     @property
     def available_inventory_space(self):
