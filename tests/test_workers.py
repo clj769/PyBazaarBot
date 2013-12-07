@@ -28,3 +28,10 @@ class TestWorkers(unittest.TestCase):
         f.perform_production()
         ore_amount = f.inventory['Ore']['amount']
         self.assertEqual(ore_amount, 2)
+
+    def test_woodcutter_production(self):
+        f = Agent(occupation='woodcutter')
+        f.inventory['Food'] = {'amount': 1}
+        f.perform_production()
+        wood_amount = f.inventory['Wood']['amount']
+        self.assertEqual(wood_amount, 1)
