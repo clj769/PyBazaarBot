@@ -134,6 +134,10 @@ class Agent(object):
         self.perform_production()
         self.generate_offers()
 
+
+class Farmer(Agent):
+    pass
+
 if __name__ == "__main__":
     with open('agents.json', 'r') as file:
         data = json.loads(file.read())
