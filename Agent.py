@@ -53,6 +53,9 @@ class Agent(object):
         pass
 
     def create_bid(self, commodity, limit):
+        if limit <= 0:
+            return None
+
         ideal = self.determine_purchase_quantity(commodity)
 
         bid = {'price': self.price_of(commodity),
@@ -101,8 +104,8 @@ class Agent(object):
         return amount_to_sell
 
     def observed_trading_range(self, commodity):
-        low = min(self.observed_trades[commodity])
-        high = max(self.observed_trades[commodity])
+        low = min(self.observed_trades.get(commodity, None))
+        high = max(self.observed_trades.get(commodity, None))
 
         return low, high
 
