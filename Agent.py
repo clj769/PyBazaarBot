@@ -1,6 +1,7 @@
 import json
 import random
 from bazaar import Bazaar
+from strategies import farming, mining
 
 
 class Agent(object):
@@ -10,20 +11,22 @@ class Agent(object):
         'Food': 1
     }
 
-    def __init__(self, bazaar, name=None, occupation=None, price_beliefs=None,
+    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None,
                  observed_trades=None, inventory=None,
                  inventory_space=100):
-        """
-
-
-        :param bazaar: the Bazaar where the Agent is trading
-        """
         #TODO: update price beliefs
         #TODO: update observed trades
         if name is not None:
             self.name = name
         else:
             self.name = repr(self)
+
+        if occupation == 'farmer':
+            self.perform_production = farming
+        elif occupation == 'miner':
+            self.perform_production = mining
+        else:
+            self.perform_production = farming
 
         self.occupation = occupation
         self.price_beliefs = price_beliefs
@@ -131,55 +134,8 @@ class Agent(object):
         other_agent.inventory['coins'] = {'amount': current_amount + amount}
 
     def update(self):
-        pass
+        self.perform_production(self)
 
-    __update = update
-
-
-class Farmer(Agent):
-    def __init__(self, bazaar=None,
-                 name=None,
-                 price_beliefs=None,
-                 observed_trades=None,
-                 inventory=None,
-                 inventory_space=100):
-        super(Farmer, self).__init__(bazaar=bazaar, name=name, occupation='Farmer', price_beliefs=price_beliefs,
-                                     observed_trades=observed_trades, inventory=inventory,
-                                     inventory_space=inventory_space)
-
-    def update(self):
-        super(Farmer, self).update()
-        self.perform_production()
-
-    def perform_production(self):
-        wood_amount = self.inventory.get('Wood', {}).get('amount', 0)
-        food_amount = self.inventory.get('Food', {}).get('amount', 0)
-        if wood_amount:
-            self.inventory['Wood'] = {'amount': wood_amount - 1}
-            self.inventory['Food'] = {'amount': food_amount + 2}
-
-
-class Miner(Agent):
-    def __init__(self, bazaar=None,
-                 name=None,
-                 price_beliefs=None,
-                 observed_trades=None,
-                 inventory=None,
-                 inventory_space=100):
-        super(Miner, self).__init__(bazaar=bazaar, name=name, occupation='Miner', price_beliefs=price_beliefs,
-                                     observed_trades=observed_trades, inventory=inventory,
-                                     inventory_space=inventory_space)
-
-    def update(self):
-        super(Miner, self).update()
-        self.perform_production()
-
-    def perform_production(self):
-        ore_amount = self.inventory.get('Ore', {}).get('amount', 0)
-        food_amount = self.inventory.get('Food', {}).get('amount', 0)
-        if food_amount:
-            self.inventory['Ore'] = {'amount': ore_amount + 2}
-            self.inventory['Food'] = {'amount': food_amount - 1}
 
 if __name__ == "__main__":
     with open('agents.json', 'r') as file:

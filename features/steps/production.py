@@ -1,14 +1,8 @@
-from agent import Farmer, Miner
+from agent import Agent
 
 @given('a {worker} with {amount} {commodity}')
 def step_impl(context, worker, amount, commodity):
-    if worker == 'farmer':
-        context.worker = Farmer(None)
-    elif worker == 'miner':
-        context.worker = Miner(None)
-    else:
-        context.worker = None
-
+    context.worker = Agent(occupation=worker)
     context.worker.inventory[commodity] = {'amount': int(amount)}
 
 @when('he works')
