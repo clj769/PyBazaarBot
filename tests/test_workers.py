@@ -15,9 +15,16 @@ class TestWorkers(unittest.TestCase):
         f = Agent(occupation='farmer')
         self.assertEqual(f.occupation, 'farmer')
 
-    def test_production(self):
+    def test_farmer_production(self):
         f = Agent(occupation='farmer')
         f.inventory['Wood'] = {'amount': 1}
-        f.perform_production(f)
+        f.perform_production()
         food_amount = f.inventory['Food']['amount']
         self.assertEqual(food_amount, 2)
+
+    def test_miner_production(self):
+        f = Agent(occupation='miner')
+        f.inventory['Food'] = {'amount': 1}
+        f.perform_production()
+        ore_amount = f.inventory['Ore']['amount']
+        self.assertEqual(ore_amount, 2)

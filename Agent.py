@@ -1,7 +1,8 @@
 import json
 import random
 from bazaar import Bazaar
-from strategies import farming, mining
+from strategies import farming, mining, nothing
+import types
 
 
 class Agent(object):
@@ -22,11 +23,11 @@ class Agent(object):
             self.name = repr(self)
 
         if occupation == 'farmer':
-            self.perform_production = farming
+            self.perform_production = types.MethodType(farming, self)
         elif occupation == 'miner':
-            self.perform_production = mining
+            self.perform_production = types.MethodType(mining, self)
         else:
-            self.perform_production = farming
+            self.perform_production = types.MethodType(nothing, self)
 
         self.occupation = occupation
         self.price_beliefs = price_beliefs
@@ -134,7 +135,7 @@ class Agent(object):
         other_agent.inventory['coins'] = {'amount': current_amount + amount}
 
     def update(self):
-        self.perform_production(self)
+        self.perform_production()
 
 
 if __name__ == "__main__":
