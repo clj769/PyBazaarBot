@@ -114,8 +114,17 @@ class Agent(object):
         return amount_to_sell
 
     def observed_trading_range(self, commodity):
-        low = min(self.observed_trades.get(commodity, None))
-        high = max(self.observed_trades.get(commodity, None))
+        if self.observed_trades:
+            observed_trades = self.observed_trades.get(commodity, None)
+        else:
+            observed_trades = None
+
+        if observed_trades:
+            low = min(observed_trades)
+            high = max(observed_trades)
+        else:
+            low = 0
+            high = 100
 
         return low, high
 
