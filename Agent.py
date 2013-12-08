@@ -1,6 +1,8 @@
 import json
 import random
 from bazaar import Bazaar
+from strategies import farming, mining, nothing, woodcutting, blacksmithing, refining
+import types
 
 
 class Agent(object):
@@ -10,24 +12,36 @@ class Agent(object):
         'Food': 1
     }
 
-    def __init__(self, bazaar, occupation=None, price_beliefs=None,
-                 observed_trades=None, money=100, inventory=None,
+    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None,
+                 observed_trades=None, inventory=None,
                  inventory_space=100):
-        """
-
-
-        :param bazaar: the Bazaar where the Agent is trading
-        """
         #TODO: update price beliefs
         #TODO: update observed trades
+        if name is not None:
+            self.name = name
+        else:
+            self.name = repr(self)
+
+        if occupation == 'farmer':
+            self.perform_production = types.MethodType(farming, self)
+        elif occupation == 'miner':
+            self.perform_production = types.MethodType(mining, self)
+        elif occupation == 'woodcutter':
+            self.perform_production = types.MethodType(woodcutting, self)
+        elif occupation == 'blacksmith':
+            self.perform_production = types.MethodType(blacksmithing, self)
+        elif occupation == 'refiner':
+            self.perform_production = types.MethodType(refining, self)
+        else:
+            self.perform_production = types.MethodType(nothing, self)
+
         self.occupation = occupation
         self.price_beliefs = price_beliefs
+
         if observed_trades:
             self.observed_trades = observed_trades
         else:
             self.observed_trades = {}
-
-        self.money = money
 
         if inventory:
             self.inventory = inventory
@@ -36,10 +50,6 @@ class Agent(object):
 
         self.bazaar = bazaar
         self.inventory_space = inventory_space
-
-    def __repr__(self):
-        #Todo: fix string representation
-        return str(self.money)
 
     @property
     def available_inventory_space(self):
@@ -53,6 +63,9 @@ class Agent(object):
         pass
 
     def create_bid(self, commodity, limit):
+        if limit <= 0:
+            return None
+
         ideal = self.determine_purchase_quantity(commodity)
 
         bid = {'price': self.price_of(commodity),
@@ -101,8 +114,8 @@ class Agent(object):
         return amount_to_sell
 
     def observed_trading_range(self, commodity):
-        low = min(self.observed_trades[commodity])
-        high = max(self.observed_trades[commodity])
+        low = min(self.observed_trades.get(commodity, None))
+        high = max(self.observed_trades.get(commodity, None))
 
         return low, high
 
@@ -129,7 +142,7 @@ class Agent(object):
 
     def update(self):
         self.perform_production()
-        self.generate_offers()
+
 
 if __name__ == "__main__":
     with open('agents.json', 'r') as file:

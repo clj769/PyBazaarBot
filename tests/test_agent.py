@@ -77,4 +77,4 @@ class TestAgent(unittest.TestCase):
     def test_zero_bid_results_in_no_bid(self):
         agent = self.agents[0]
         result = agent.create_bid('Food', 0)
-        self.assertNone(result)
+        self.assertIsNone(result)
