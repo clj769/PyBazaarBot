@@ -1,5 +1,4 @@
 from unittest.mock import Mock
-from behave import *
 from agent import Agent
 from bazaar import Bazaar
 
