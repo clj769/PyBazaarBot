@@ -6,12 +6,19 @@ from agent import Agent
 
 class TestAgent(unittest.TestCase):
     def setUp(self):
-        with open('test_data.json', 'r') as file:
-            data = json.loads(file.read())
-            self.agents = []
-            Bazaar = Mock()
-            for e in data:
-                self.agents.append(Agent(Bazaar(), **e))
+        data = [{
+            "occupation": "Farmer",
+            "price_beliefs": {
+                "Food": {"low": 0, "high": 100},
+                "Tools": {"low": 50, "high": 75}},
+            "inventory": {
+                "Food": {"amount": 5, "minimal": 2},
+                "Tools": {"amount": 5, "minimal": 1}}
+        }]
+        self.agents = []
+        Bazaar = Mock()
+        for e in data:
+            self.agents.append(Agent(Bazaar(), **e))
 
     def test_price_of(self):
         agent = self.agents[0]
