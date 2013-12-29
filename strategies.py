@@ -5,11 +5,11 @@ def farming(self):
     wood_amount = self.inventory.get('Wood', {}).get('amount', 0)
     food_amount = self.inventory.get('Food', {}).get('amount', 0)
     if wood_amount and self.inventory.get('Tools', {}).get('amount', 0):
-        logging.warning("{} is creating Food with tools".format(self.name))
+        logging.info("{} is creating Food with tools".format(self.name))
         self.inventory['Wood'] = {'amount': wood_amount - 1}
         self.inventory['Food'] = {'amount': food_amount + 4}
     elif wood_amount:
-        logging.warning("{} is creating Food without tools".format(self.name))
+        logging.info("{} is creating Food without tools".format(self.name))
         self.inventory['Wood'] = {'amount': wood_amount - 1}
         self.inventory['Food'] = {'amount': food_amount + 2}
     else:

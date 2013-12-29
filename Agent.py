@@ -12,9 +12,8 @@ class Agent(object):
         'Wood': 1
     }
 
-    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None,
-                 observed_trades=None, inventory=None,
-                 inventory_space=100):
+    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None, minimum_amounts = None,
+                 observed_trades=None, inventory=None, inventory_space=100):
         #TODO: update price beliefs
         #TODO: update observed trades
         if name is not None:
@@ -52,6 +51,11 @@ class Agent(object):
         else:
             self.price_beliefs = {}
 
+        if minimum_amounts:
+            self.minimum_amounts = minimum_amounts
+        else:
+            self.minimum_amounts = {}
+
         if observed_trades:
             self.observed_trades = observed_trades
         else:
@@ -60,7 +64,7 @@ class Agent(object):
         self.bazaar = bazaar
         self.inventory_space = inventory_space
 
-    def __repr__(self):
+    def __str__(self):
         return self.name
 
     @property
@@ -105,7 +109,7 @@ class Agent(object):
         return None
 
     def price_of(self, commodity):
-        belief = self.price_beliefs[commodity]
+        belief = self.price_beliefs.get(commodity, {'low': 0, 'high': 100})
         return random.randint(belief['low'], belief['high'])
 
     def determine_purchase_quantity(self, commodity):
@@ -147,7 +151,7 @@ class Agent(object):
         return mean / trading_high
 
     def excess_inventory(self, commodity):
-        current = self.inventory[commodity]['amount']
+        current = self.inventory.get(commodity, {'amount': 0})['amount']
         needed = self.minimum_amounts[commodity]
         return current - needed
         
