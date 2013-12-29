@@ -172,14 +172,6 @@ class Agent(object):
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD:agent.py
-    with open('agents.json', 'r') as file:
-        data = json.loads(file.read())
-        paris = Bazaar()
-        agents = []
-        for element in data:
-            agents.append(Agent(paris, **element))
-=======
     logging.basicConfig(level=logging.DEBUG)
 
     b = Bazaar()
@@ -210,4 +202,3 @@ if __name__ == "__main__":
         logging.debug("Bid book: {}".format(b.bid_book))
         b.update()
         logging.debug("---")
->>>>>>> trade_creation:Agent.py
