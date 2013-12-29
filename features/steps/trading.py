@@ -16,7 +16,7 @@ def step_impl(context, agent, amount, commodity):
     elif agent == 'seller':
         context.seller.inventory[commodity] = {'amount': int(amount)}
 
-@when('the seller wants to sell {amount} {commodity} for {value} coins')
+@when('the seller wants to sell {amount} {commodity} for {value} Coins')
 def step_impl(context, amount, commodity, value):
     context.seller.create_ask = Mock(return_value={
         'price': int(value),
@@ -27,7 +27,7 @@ def step_impl(context, amount, commodity, value):
     ask = context.seller.create_ask()
     context.bazaar.register_ask(ask)
 
-@when('the buyer wants to buy {amount} {commodity} for {value} coins')
+@when('the buyer wants to buy {amount} {commodity} for {value} Coins')
 def step_impl(context, amount, commodity, value):
     context.buyer.create_bid = Mock(return_value={
         'price': int(value),
@@ -42,17 +42,13 @@ def step_impl(context, amount, commodity, value):
 def step_impl(context):
     context.bazaar.update()
 
-@then('the seller has {amount} coins')
+@then('the seller has {amount} Coins')
 def step_impl(context, amount):
-    assert int(context.seller.inventory['coins']['amount']) == int(amount)
+    assert int(context.seller.inventory['Coins']['amount']) == int(amount)
 
 @then('the buyer has {amount} {commodity}')
 def step_impl(context, amount, commodity):
     assert int(context.buyer.inventory[commodity]['amount']) == int(amount)
-
-@then('a bid remains on the bid book')
-def step_impl(context):
-    assert len(context.bazaar.bid_book) > 0
 
 @given('a bazaar')
 def step_impl(context):
@@ -65,3 +61,7 @@ def step_impl(context):
 @then('he wants to sell Food')
 def step_impl(context):
     assert context.bazaar.bid_book != []
+
+@then('the books are empty')
+def step_impl(context):
+    assert len(context.bazaar.bid_book) == 0

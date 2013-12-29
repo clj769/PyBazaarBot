@@ -141,7 +141,7 @@ class Agent(object):
 
     def excess_inventory(self, commodity):
         current = self.inventory.get(commodity, {'amount': 0})['amount']
-        needed = self.minimum_amounts[commodity]
+        needed = self.minimum_amounts.get(commodity, 0)
         return current - needed
         
     def trade(self, other_agent, commodity, amount):
@@ -160,10 +160,10 @@ class Agent(object):
         self.generate_offers()
 
     def perform_production(self):
-        raise NotImplementedError('Production strategy must be bound at __init__')
+        pass
 
     def generate_offers(self):
-        raise NotImplementedError('Trading strategy must be bound at __init__')
+        pass
 
 if __name__ == "__main__":  # pragma: no cover
     logging.basicConfig(level=logging.DEBUG)
