@@ -82,10 +82,6 @@ def refining(self):
         fine_agent(self)
 
 
-def nothing(self):
-    pass
-
-
 def fine_agent(self):
     coins = self.inventory.get('Coins', {}).get('amount', 0)
     self.inventory['Coins']['amount'] = coins - 2

@@ -80,3 +80,65 @@ class TestAgent(unittest.TestCase):
         agent = Agent()
         result = agent.create_bid('Food', 0)
         self.assertIsNone(result)
+
+    def test_create_farmer(self):
+        agent = Agent(occupation='farmer')
+        self.assertIsNotNone(agent, "Farmer was not created")
+        self.assertEqual(agent.occupation, "farmer")
+
+    def test_create_miner(self):
+        agent = Agent(occupation='miner')
+        self.assertIsNotNone(agent, "Miner was not created")
+        self.assertEqual(agent.occupation, "miner")
+
+    def test_create_woodcutter(self):
+        agent = Agent(occupation='woodcutter')
+        self.assertIsNotNone(agent, "Woodcutter was not created")
+        self.assertEqual(agent.occupation, "woodcutter")
+
+    def test_create_blacksmith(self):
+        agent = Agent(occupation='blacksmith')
+        self.assertIsNotNone(agent, "Blacksmith was not created")
+        self.assertEqual(agent.occupation, "blacksmith")
+
+    def test_create_refiner(self):
+        agent = Agent(occupation='refiner')
+        self.assertIsNotNone(agent, "Refiner was not created")
+        self.assertEqual(agent.occupation, "refiner")
+
+    def test_price_beliefs(self):
+        price_beliefs = {'Food': {'low': 0, 'high': 10} }
+        agent = Agent(price_beliefs=price_beliefs)
+        self.assertIsNotNone(agent)
+
+    def test_minimum_amounts(self):
+        minimum_amounts = {'Food': 2, 'Wood': 1}
+        agent = Agent(minimum_amounts=minimum_amounts)
+        self.assertIsNotNone(agent)
+
+    def test_negative_buy_orders(self):
+        b = Bazaar()
+        agent = Agent(b, minimum_amounts={'Food': 0})
+        agent.determine_sale_quantity = MagicMock(return_value=-1)
+        ask = agent.create_ask('Food', 10)
+        self.assertIsNone(ask)
+
+    def test_negative_sale_orders(self):
+        b = Bazaar()
+        agent = Agent(b, minimum_amounts={'Food': 0})
+        agent.determine_purchase_quantity = MagicMock(return_value=-1)
+        ask = agent.create_bid('Food', 10)
+        self.assertIsNone(ask)
+
+    def test_observed_trading_ranges(self):
+        agent = Agent()
+        low, high = agent.observed_trading_range('Food')
+        self.assertEqual(low, 0)
+        self.assertEqual(high, 100)
+
+    def test_empty_agent_update(self):
+        agent = Agent()
+        self.assertRaises(NotImplementedError, agent.update)
+        self.assertRaises(NotImplementedError, agent.generate_offers)
+        agent.perform_production = MagicMock()
+        self.assertRaises(NotImplementedError, agent.update)

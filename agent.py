@@ -1,6 +1,6 @@
 import logging, sys, random, types
 from bazaar import Bazaar
-from strategies import farming, mining, nothing, woodcutting, blacksmithing, refining
+from strategies import farming, mining, woodcutting, blacksmithing, refining
 from strategies import farmer_trading, woodcutter_trading
 
 
@@ -12,8 +12,8 @@ class Agent(object):
         'Wood': 1
     }
 
-    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None, minimum_amounts = None,
-                 observed_trades=None, inventory=None, inventory_space=100):
+    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None, minimum_amounts=None,
+                 inventory=None, inventory_space=100):
         #TODO: update price beliefs
         #TODO: update observed trades
         if name is not None:
@@ -40,9 +40,6 @@ class Agent(object):
             self.perform_production = types.MethodType(blacksmithing, self)
         elif occupation == 'refiner':
             self.perform_production = types.MethodType(refining, self)
-        else:
-            self.perform_production = types.MethodType(nothing, self)
-            self.generate_offers = types.MethodType(nothing, self)
 
         self.occupation = occupation
 
@@ -56,11 +53,7 @@ class Agent(object):
         else:
             self.minimum_amounts = {}
 
-        if observed_trades:
-            self.observed_trades = observed_trades
-        else:
-            self.observed_trades = {}
-
+        self.observed_trades = {}
         self.bazaar = bazaar
         self.inventory_space = inventory_space
 
@@ -75,11 +68,7 @@ class Agent(object):
 
         return self.inventory_space - occupied_space
 
-    def perform_production(self):
-        pass
-
     def create_bid(self, commodity, limit):
-        #TODO: disallow negative amounts
         if limit <= 0:
             return None
 
@@ -99,7 +88,7 @@ class Agent(object):
         ideal = self.determine_sale_quantity(commodity)
 
         ask = {'price': self.price_of(commodity),
-               'amount': max(ideal, limit),
+               'amount': min(ideal, limit),
                'commodity': commodity,
                'seller': self}
 
@@ -170,8 +159,13 @@ class Agent(object):
         self.perform_production()
         self.generate_offers()
 
+    def perform_production(self):
+        raise NotImplementedError('Production strategy must be bound at __init__')
 
-if __name__ == "__main__":
+    def generate_offers(self):
+        raise NotImplementedError('Trading strategy must be bound at __init__')
+
+if __name__ == "__main__":  # pragma: no cover
     logging.basicConfig(level=logging.DEBUG)
 
     b = Bazaar()
