@@ -33,3 +33,4 @@ reports
 
 # Pycharm
 .idea
+*.output
