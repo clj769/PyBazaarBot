@@ -53,3 +53,15 @@ def step_impl(context, amount, commodity):
 @then('a bid remains on the bid book')
 def step_impl(context):
     assert len(context.bazaar.bid_book) > 0
+
+@given('a bazaar')
+def step_impl(context):
+    context.bazaar = Bazaar()
+
+@then('he wants to buy Wood')
+def step_impl(context):
+    assert context.bazaar.ask_book != []
+
+@then('he wants to sell Food')
+def step_impl(context):
+    assert context.bazaar.bid_book != []

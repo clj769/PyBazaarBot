@@ -1,20 +1,19 @@
-import json
-import random
+import logging, sys, random, types
 from bazaar import Bazaar
 from strategies import farming, mining, nothing, woodcutting, blacksmithing, refining
-import types
+from strategies import farmer_trading, woodcutter_trading
 
 
 class Agent(object):
     weights = {
         'Tools': 1,
         'Coins': 0,
-        'Food': 1
+        'Food': 1,
+        'Wood': 1
     }
 
-    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None,
-                 observed_trades=None, inventory=None,
-                 inventory_space=100):
+    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None, minimum_amounts = None,
+                 observed_trades=None, inventory=None, inventory_space=100):
         #TODO: update price beliefs
         #TODO: update observed trades
         if name is not None:
@@ -22,34 +21,51 @@ class Agent(object):
         else:
             self.name = repr(self)
 
+        if inventory:
+            self.inventory = inventory
+        else:
+            self.inventory = {}
+
         if occupation == 'farmer':
             self.perform_production = types.MethodType(farming, self)
+            self.generate_offers = types.MethodType(farmer_trading, self)
+            self.minimum_amounts = {'Wood': 2, 'Coins': 0, 'Food': 0}
         elif occupation == 'miner':
             self.perform_production = types.MethodType(mining, self)
         elif occupation == 'woodcutter':
             self.perform_production = types.MethodType(woodcutting, self)
+            self.generate_offers = types.MethodType(woodcutter_trading, self)
+            self.minimum_amounts = {'Wood': 0, 'Coins': 0, 'Food': 4}
         elif occupation == 'blacksmith':
             self.perform_production = types.MethodType(blacksmithing, self)
         elif occupation == 'refiner':
             self.perform_production = types.MethodType(refining, self)
         else:
             self.perform_production = types.MethodType(nothing, self)
+            self.generate_offers = types.MethodType(nothing, self)
 
         self.occupation = occupation
-        self.price_beliefs = price_beliefs
+
+        if price_beliefs:
+            self.price_beliefs = price_beliefs
+        else:
+            self.price_beliefs = {}
+
+        if minimum_amounts:
+            self.minimum_amounts = minimum_amounts
+        else:
+            self.minimum_amounts = {}
 
         if observed_trades:
             self.observed_trades = observed_trades
         else:
             self.observed_trades = {}
 
-        if inventory:
-            self.inventory = inventory
-        else:
-            self.inventory = {}
-
         self.bazaar = bazaar
         self.inventory_space = inventory_space
+
+    def __str__(self):
+        return self.name
 
     @property
     def available_inventory_space(self):
@@ -63,6 +79,7 @@ class Agent(object):
         pass
 
     def create_bid(self, commodity, limit):
+        #TODO: disallow negative amounts
         if limit <= 0:
             return None
 
@@ -92,7 +109,7 @@ class Agent(object):
         return None
 
     def price_of(self, commodity):
-        belief = self.price_beliefs[commodity]
+        belief = self.price_beliefs.get(commodity, {'low': 0, 'high': 100})
         return random.randint(belief['low'], belief['high'])
 
     def determine_purchase_quantity(self, commodity):
@@ -134,8 +151,8 @@ class Agent(object):
         return mean / trading_high
 
     def excess_inventory(self, commodity):
-        current = self.inventory[commodity]['amount']
-        needed = self.inventory[commodity]['minimal']
+        current = self.inventory.get(commodity, {'amount': 0})['amount']
+        needed = self.minimum_amounts[commodity]
         return current - needed
         
     def trade(self, other_agent, commodity, amount):
@@ -145,18 +162,52 @@ class Agent(object):
         #TODO: register observed trades and prices
         
     def pay(self, other_agent, amount):
-        self.inventory['coins']['amount'] -= amount
-        current_amount = other_agent.inventory.get('coins', {}).get('amount', 0)
-        other_agent.inventory['coins'] = {'amount': current_amount + amount}
+        self.inventory['Coins']['amount'] -= amount
+        current_amount = other_agent.inventory.get('Coins', {}).get('amount', 0)
+        other_agent.inventory['Coins'] = {'amount': current_amount + amount}
 
     def update(self):
         self.perform_production()
+        self.generate_offers()
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD:agent.py
     with open('agents.json', 'r') as file:
         data = json.loads(file.read())
         paris = Bazaar()
         agents = []
         for element in data:
             agents.append(Agent(paris, **element))
+=======
+    logging.basicConfig(level=logging.DEBUG)
+
+    b = Bazaar()
+    agents = []
+    for i in range(1):
+        agents.append(Agent(bazaar=b, occupation='farmer', name='farmer#'+str(i)))
+        agent = agents[-1]
+        agent.inventory['Wood'] = {'amount': 5}
+        agent.inventory['Coins'] = {'amount': 10}
+        agent.inventory['Food'] = {'amount': 0}
+        agent.price_beliefs['Food'] = {'low': 2, 'high': 14}
+        agent.price_beliefs['Wood'] = {'low': 1, 'high': 8}
+
+    for i in range(1):
+        agents.append(Agent(bazaar=b, occupation='woodcutter', name='woodcutter#'+str(i)))
+        agent = agents[-1]
+        agent.inventory['Wood'] = {'amount': 0}
+        agent.inventory['Coins'] = {'amount': 10}
+        agent.inventory['Food'] = {'amount': 8}
+        agent.price_beliefs['Food'] = {'low': 2, 'high': 14}
+        agent.price_beliefs['Wood'] = {'low': 1, 'high': 8}
+
+    for i in range(11):
+        for agent in agents:
+            agent.update()
+            logging.debug(agent.name + str(agent.inventory))
+        logging.debug("Ask book: {}".format(b.ask_book))
+        logging.debug("Bid book: {}".format(b.bid_book))
+        b.update()
+        logging.debug("---")
+>>>>>>> trade_creation:Agent.py

@@ -1,14 +1,28 @@
+import logging
+
+
 def farming(self):
     wood_amount = self.inventory.get('Wood', {}).get('amount', 0)
     food_amount = self.inventory.get('Food', {}).get('amount', 0)
     if wood_amount and self.inventory.get('Tools', {}).get('amount', 0):
+        logging.info("{} is creating Food with tools".format(self.name))
         self.inventory['Wood'] = {'amount': wood_amount - 1}
         self.inventory['Food'] = {'amount': food_amount + 4}
     elif wood_amount:
+        logging.info("{} is creating Food without tools".format(self.name))
         self.inventory['Wood'] = {'amount': wood_amount - 1}
         self.inventory['Food'] = {'amount': food_amount + 2}
     else:
         fine_agent(self)
+
+
+def farmer_trading(self):
+    wood_amount = self.inventory.get('Wood', {}).get('amount', 0)
+    food_amount = self.inventory.get('Food', {}).get('amount', 0)
+    if wood_amount < 2:
+        self.bazaar.register_bid(self.create_bid('Wood', 10))
+    if food_amount > 2:
+        self.bazaar.register_ask(self.create_ask('Food', food_amount-2))
 
 
 def mining(self):
@@ -35,6 +49,15 @@ def woodcutting(self):
         self.inventory['Wood'] = {'amount': wood_amount + 1}
     else:
         fine_agent(self)
+
+
+def woodcutter_trading(self):
+    wood_amount = self.inventory.get('Wood', {}).get('amount', 0)
+    food_amount = self.inventory.get('Food', {}).get('amount', 0)
+    if food_amount < 2:
+        self.bazaar.register_bid(self.create_bid('Food', 10))
+    if wood_amount > 2:
+        self.bazaar.register_ask(self.create_ask('Wood', wood_amount-2))
 
 
 def blacksmithing(self):

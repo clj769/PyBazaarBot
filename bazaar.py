@@ -1,4 +1,5 @@
 import random
+import logging
 
 
 class Bazaar(object):
@@ -23,6 +24,8 @@ class Bazaar(object):
 
     def update(self):
         self.resolve_offers()
+        self.bid_book = []
+        self.ask_book = []
 
     def resolve_offers(self):
         random.shuffle(self.bid_book)
@@ -36,6 +39,7 @@ class Bazaar(object):
             ask = self.ask_book.pop()
 
             if bid['price'] >= ask['price']:
+                logging.debug('resolving trade between ' + str(bid['buyer']) + " and " + str(ask['seller']))
                 remaining_bid, remaining_ask = self.resolve_offer(bid, ask)
 
                 if remaining_ask:
@@ -65,3 +69,7 @@ class Bazaar(object):
             ask['amount'] -= trade_amount
 
         return bid, ask
+
+    def get_mean_price_of(self, commodity):
+        return 10
+    #TODO: implement feature to do calculate this automatically
