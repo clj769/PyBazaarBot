@@ -135,10 +135,3 @@ class TestAgent(unittest.TestCase):
         low, high = agent.observed_trading_range('Food')
         self.assertEqual(low, 0)
         self.assertEqual(high, 100)
-
-    def test_empty_agent_update(self):
-        agent = Agent()
-        self.assertRaises(NotImplementedError, agent.update)
-        self.assertRaises(NotImplementedError, agent.generate_offers)
-        agent.perform_production = MagicMock()
-        self.assertRaises(NotImplementedError, agent.update)
