@@ -6,24 +6,6 @@ from bazaar import Bazaar
 
 
 class TestAgent(unittest.TestCase):
-<<<<<<< HEAD
-    def setUp(self):
-        data = [{
-            "occupation": "Farmer",
-            "price_beliefs": {
-                "Food": {"low": 0, "high": 100},
-                "Tools": {"low": 50, "high": 75}},
-            "inventory": {
-                "Food": {"amount": 5, "minimal": 2},
-                "Tools": {"amount": 5, "minimal": 1}}
-        }]
-        self.agents = []
-        Bazaar = Mock()
-        for e in data:
-            self.agents.append(Agent(Bazaar(), **e))
-
-=======
->>>>>>> trade_creation
     def test_price_of(self):
         agent = Agent()
         agent.price_beliefs['Food'] = {'low': 0, 'high': 10}
