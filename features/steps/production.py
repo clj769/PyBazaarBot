@@ -1,9 +1,11 @@
 from agent import Agent
+from bazaar import Bazaar
 
 @given('a {worker} with {amount} {commodity}')
 def step_impl(context, worker, amount, commodity):
     if getattr(context, 'worker', None) is None:
-        context.worker = Agent(occupation=worker)
+        b = Bazaar()
+        context.worker = Agent(occupation=worker, bazaar=b)
     context.worker.inventory[commodity] = {'amount': int(amount)}
 
 @when('he works')
