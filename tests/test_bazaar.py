@@ -45,3 +45,16 @@ class TestBazaar(unittest.TestCase):
         b.update()
         self.assertEqual(len(b.bid_book), 0)
         self.assertEqual(len(b.ask_book), 0)
+
+    def test_bazaar_history(self):
+        b = Bazaar()
+        b.register_successful_trade(commodity='Ore', amount=3, price=10)
+        self.assertEqual(b.history[0], [{'commodity': 'Ore', 'amount': 3, 'price': 10}])
+
+    def test_bazaar_history_with_unsuccessful_trades(self):
+        b = Bazaar()
+        b.current = 3
+        b.register_successful_trade(commodity='Ore', amount=3, price=10)
+        self.assertEqual(len(b.history), 4)
+        self.assertEqual(b.history[0:3], [[], [], []])
+        self.assertEqual(b.history[3], [{'commodity': 'Ore', 'amount': 3, 'price': 10}])

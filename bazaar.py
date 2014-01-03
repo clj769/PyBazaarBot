@@ -11,6 +11,8 @@ class Bazaar(object):
     def __init__(self):
         self.bid_book = []
         self.ask_book = []
+        self.history = [[]]
+        self.current = 0
 
     def register_ask(self, ask):
         """Register an ask in the ask book which will be reconciled with the bid book when update is called.
@@ -26,6 +28,7 @@ class Bazaar(object):
         self.resolve_offers()
         self.bid_book = []
         self.ask_book = []
+        self.current += 1
 
     def resolve_offers(self):
         random.shuffle(self.bid_book)
@@ -57,6 +60,7 @@ class Bazaar(object):
 
         ask['seller'].trade(bid['buyer'], bid['commodity'], trade_amount)
         bid['buyer'].pay(ask['seller'], trade_amount*trade_price)
+        self.register_successful_trade(bid['commodity'], trade_amount, trade_price)
 
         if bid['amount'] == trade_amount:
             bid = None
@@ -69,6 +73,16 @@ class Bazaar(object):
             ask['amount'] -= trade_amount
 
         return bid, ask
+
+    def register_successful_trade(self, commodity, amount, price):
+        empty = self.current - len(self.history)
+
+        if empty:
+            empty_spots = empty * [[]]
+            self.history.extend(empty_spots)
+            self.history.append([])
+
+        self.history[self.current].append({'commodity': commodity, 'amount': amount, 'price': price})
 
     def get_mean_price_of(self, commodity):
         return 10
