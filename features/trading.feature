@@ -21,3 +21,12 @@ Feature: a bazaar is the marketplace where agents may trade by sending buy and
         And the buyer wants to buy 2 Food for 2 Coins
         Then the sale succeeds
         And the books are empty
+
+    Scenario: a bazaar keeps a history of successful trades
+        Given a bazaar where two agents trade
+        And the seller has 3 Wood
+        And the buyer has 8 Coins
+        When the seller wants to sell 3 Wood for 6 Coins
+        And the buyer wants to buy 2 Wood for 8 Coins
+        Then the sale succeeds
+        And the bazaar has registered the trade

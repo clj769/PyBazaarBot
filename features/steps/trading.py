@@ -1,3 +1,4 @@
+import logging
 from unittest.mock import Mock
 from agent import Agent
 from bazaar import Bazaar
@@ -65,3 +66,9 @@ def step_impl(context):
 @then('the books are empty')
 def step_impl(context):
     assert len(context.bazaar.bid_book) == 0
+
+@then('the bazaar has registered the trade')
+def step_impl(context):
+    assert len(context.bazaar.history) > 0
+    trade = {'commodity': 'Wood', 'price': 7, 'amount': 2}
+    assert context.bazaar.history[0] == [trade]
