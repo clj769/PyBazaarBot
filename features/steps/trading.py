@@ -13,9 +13,9 @@ def step_impl(context):
 @given('the {agent} has {amount} {commodity}')
 def step_impl(context, agent, amount, commodity):
     if agent == 'buyer':
-        context.buyer.inventory[commodity] = {'amount': int(amount)}
+        context.buyer.inventory[commodity] = int(amount)
     elif agent == 'seller':
-        context.seller.inventory[commodity] = {'amount': int(amount)}
+        context.seller.inventory[commodity] = int(amount)
 
 @when('the seller wants to sell {amount} {commodity} for {value} Coins')
 def step_impl(context, amount, commodity, value):
@@ -45,11 +45,11 @@ def step_impl(context):
 
 @then('the seller has {amount} Coins')
 def step_impl(context, amount):
-    assert int(context.seller.inventory['Coins']['amount']) == int(amount)
+    assert int(context.seller.inventory['Coins']) == int(amount)
 
 @then('the buyer has {amount} {commodity}')
 def step_impl(context, amount, commodity):
-    assert int(context.buyer.inventory[commodity]['amount']) == int(amount)
+    assert int(context.buyer.inventory[commodity]) == int(amount)
 
 @given('a bazaar')
 def step_impl(context):

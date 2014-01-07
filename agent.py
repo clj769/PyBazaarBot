@@ -63,8 +63,9 @@ class Agent(object):
     @property
     def available_inventory_space(self):
         occupied_space = 0
-        for name, properties in self.inventory.items():
-            occupied_space += properties['amount'] * self.weights[name]
+
+        for name, amount in self.inventory.items():
+            occupied_space += amount * self.weights[name]
 
         return self.inventory_space - occupied_space
 
@@ -140,20 +141,20 @@ class Agent(object):
         return mean / trading_high
 
     def excess_inventory(self, commodity):
-        current = self.inventory.get(commodity, {'amount': 0})['amount']
+        current = self.inventory.get(commodity, 0)
         needed = self.minimum_amounts.get(commodity, 0)
         return current - needed
         
     def trade(self, other_agent, commodity, amount):
-        self.inventory[commodity]['amount'] -= amount
-        current_amount = other_agent.inventory.get(commodity, {}).get('amount',0)
-        other_agent.inventory[commodity] = {'amount': current_amount + amount}
+        self.inventory[commodity] -= amount
+        current_amount = other_agent.inventory.get(commodity, 0)
+        other_agent.inventory[commodity] = current_amount + amount
         #TODO: register observed trades and prices
         
     def pay(self, other_agent, amount):
-        self.inventory['Coins']['amount'] -= amount
-        current_amount = other_agent.inventory.get('Coins', {}).get('amount', 0)
-        other_agent.inventory['Coins'] = {'amount': current_amount + amount}
+        self.inventory['Coins'] -= amount
+        current_amount = other_agent.inventory.get('Coins', 0)
+        other_agent.inventory['Coins'] = current_amount + amount
 
     def update(self):
         self.perform_production()
@@ -173,18 +174,18 @@ if __name__ == "__main__":  # pragma: no cover
     for i in range(1):
         agents.append(Agent(bazaar=b, occupation='farmer', name='farmer#'+str(i)))
         agent = agents[-1]
-        agent.inventory['Wood'] = {'amount': 5}
-        agent.inventory['Coins'] = {'amount': 10}
-        agent.inventory['Food'] = {'amount': 0}
+        agent.inventory['Wood'] = 5
+        agent.inventory['Coins'] = 10
+        agent.inventory['Food'] = 0
         agent.price_beliefs['Food'] = {'low': 2, 'high': 14}
         agent.price_beliefs['Wood'] = {'low': 1, 'high': 8}
 
     for i in range(1):
         agents.append(Agent(bazaar=b, occupation='woodcutter', name='woodcutter#'+str(i)))
         agent = agents[-1]
-        agent.inventory['Wood'] = {'amount': 0}
-        agent.inventory['Coins'] = {'amount': 10}
-        agent.inventory['Food'] = {'amount': 8}
+        agent.inventory['Wood'] = 0
+        agent.inventory['Coins'] = 10
+        agent.inventory['Food'] = 8
         agent.price_beliefs['Food'] = {'low': 2, 'high': 14}
         agent.price_beliefs['Wood'] = {'low': 1, 'high': 8}
 

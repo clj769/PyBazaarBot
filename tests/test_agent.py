@@ -30,7 +30,7 @@ class TestAgent(unittest.TestCase):
     def test_determine_purchase_quantity(self):
         b = Bazaar()
         agent = Agent(bazaar=b)
-        agent.inventory['Wood'] = {'amount': 10}
+        agent.inventory['Wood'] = 10
 
         agent.bazaar.get_mean_price_of = MagicMock(return_value=5)
         agent.observed_trading_range = MagicMock(return_value=(0, 10))
@@ -54,7 +54,7 @@ class TestAgent(unittest.TestCase):
 
     def test_available_inventory_space(self):
         agent = Agent()
-        agent.inventory['Wood'] = {'amount': 10}
+        agent.inventory['Wood'] = 10
         result = agent.available_inventory_space
         self.assertEqual(result, 90)
 
@@ -71,7 +71,7 @@ class TestAgent(unittest.TestCase):
 
     def test_excess_inventory(self):
         agent = Agent()
-        agent.inventory['Food'] = {'amount': 5}
+        agent.inventory['Food'] = 5
         agent.minimum_amounts['Food'] = 2
         result = agent.excess_inventory('Food')
         self.assertEqual(result, 5-2)
@@ -135,3 +135,24 @@ class TestAgent(unittest.TestCase):
         low, high = agent.observed_trading_range('Food')
         self.assertEqual(low, 0)
         self.assertEqual(high, 100)
+
+    def test_inventory(self):
+        agent = Agent()
+        agent.inventory['Food'] = 10
+        self.assertEqual(agent.inventory['Food'], 10)
+
+    def test_add_to_inventory(self):
+        agent = Agent()
+        agent.inventory['Wood'] = 0
+        agent.inventory['Wood'] += 5
+        self.assertEqual(agent.inventory['Wood'], 5)
+
+    def test_empty_inventory(self):
+        agent = Agent()
+        self.assertEqual(agent.inventory.get('Wood', 0), 0)
+
+    def test_remove_from_inventory(self):
+        agent = Agent()
+        agent.inventory['Ore'] = 3
+        agent.inventory['Ore'] -= 3
+        self.assertEqual(agent.inventory['Ore'], 0)
