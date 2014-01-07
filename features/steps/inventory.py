@@ -10,11 +10,11 @@ def step_impl(context):
 
 @when('given {amount} {item}')
 def step_impl(context, amount, item):
-    context.agent.inventory[item] = {'amount': int(amount)}
+    context.agent.inventory[item] = int(amount)
 
 @then('the Agent owns {amount} {item}')
 def step_impl(context, amount, item):
-    context.agent.inventory[item]['amount'] == int(amount)
+    context.agent.inventory[item] == int(amount)
 
 @given('the Agent has {amount} inventory space')
 def step_impl(context, amount):
