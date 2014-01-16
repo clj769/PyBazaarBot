@@ -29,7 +29,7 @@ class TestAgent(unittest.TestCase):
 
     def test_determine_purchase_quantity(self):
         b = Bazaar()
-        agent = Agent(bazaar=b)
+        agent = Agent(bazaar=b, inventory_space=100)
         agent.inventory['Wood'] = 10
 
         agent.bazaar.get_mean_price_of = MagicMock(return_value=5)
@@ -53,7 +53,7 @@ class TestAgent(unittest.TestCase):
         self.assertEqual(result2, 0.25)
 
     def test_available_inventory_space(self):
-        agent = Agent()
+        agent = Agent(inventory_space=100)
         agent.inventory['Wood'] = 10
         result = agent.available_inventory_space
         self.assertEqual(result, 90)
@@ -111,21 +111,16 @@ class TestAgent(unittest.TestCase):
         agent = Agent(price_beliefs=price_beliefs)
         self.assertIsNotNone(agent)
 
-    def test_minimum_amounts(self):
-        minimum_amounts = {'Food': 2, 'Wood': 1}
-        agent = Agent(minimum_amounts=minimum_amounts)
-        self.assertIsNotNone(agent)
-
     def test_negative_buy_orders(self):
         b = Bazaar()
-        agent = Agent(b, minimum_amounts={'Food': 0})
+        agent = Agent(b)
         agent.determine_sale_quantity = MagicMock(return_value=-1)
         ask = agent.create_ask('Food', 10)
         self.assertIsNone(ask)
 
     def test_negative_sale_orders(self):
         b = Bazaar()
-        agent = Agent(b, minimum_amounts={'Food': 0})
+        agent = Agent(b)
         agent.determine_purchase_quantity = MagicMock(return_value=-1)
         ask = agent.create_bid('Food', 10)
         self.assertIsNone(ask)

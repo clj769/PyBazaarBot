@@ -1,7 +1,6 @@
 import logging, sys, random, types
 from bazaar import Bazaar
-from strategies import farming, mining, woodcutting, blacksmithing, refining
-from strategies import farmer_trading, woodcutter_trading
+from strategies import Strategy
 
 
 class Agent(object):
@@ -12,10 +11,8 @@ class Agent(object):
         'Wood': 1
     }
 
-    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None, minimum_amounts=None,
-                 inventory=None, inventory_space=100):
+    def __init__(self, bazaar=None, name=None, occupation=None, price_beliefs=None, inventory=None, inventory_space=30):
         #TODO: update price beliefs
-        #TODO: update observed trades
         if name is not None:
             self.name = name
         else:
@@ -26,22 +23,12 @@ class Agent(object):
         else:
             self.inventory = {}
 
-        if occupation == 'farmer':
-            self.perform_production = types.MethodType(farming, self)
-            self.generate_offers = types.MethodType(farmer_trading, self)
-            self.minimum_amounts = {'Wood': 2, 'Coins': 0, 'Food': 0}
-        elif occupation == 'miner':
-            self.perform_production = types.MethodType(mining, self)
-        elif occupation == 'woodcutter':
-            self.perform_production = types.MethodType(woodcutting, self)
-            self.generate_offers = types.MethodType(woodcutter_trading, self)
-            self.minimum_amounts = {'Wood': 0, 'Coins': 0, 'Food': 4}
-        elif occupation == 'blacksmith':
-            self.perform_production = types.MethodType(blacksmithing, self)
-        elif occupation == 'refiner':
-            self.perform_production = types.MethodType(refining, self)
-
         self.occupation = occupation
+
+        production_strategy, trading_strategy, minimum_amounts = Strategy.get_strategy(occupation)
+        self.perform_production = types.MethodType(production_strategy, self)
+        self.generate_offers = types.MethodType(trading_strategy, self)
+        self.minimum_amounts = minimum_amounts
 
         if price_beliefs:
             self.price_beliefs = price_beliefs
@@ -165,6 +152,9 @@ class Agent(object):
 
     def generate_offers(self):
         pass
+
+    def fine_agent(self):
+        self.inventory['Coins'] -= 2
 
 if __name__ == "__main__":  # pragma: no cover
     logging.basicConfig(level=logging.DEBUG)

@@ -1,7 +1,11 @@
-from behave import *
 from mock import Mock
 from agent import Agent
+import logging
 
+
+def before_all(context):
+    if not context.config.log_capture:
+        logging.basicConfig(level=logging.DEBUG)
 
 @given('the Agent')
 def step_impl(context):

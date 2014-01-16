@@ -1,5 +1,11 @@
 from agent import Agent
 from bazaar import Bazaar
+import logging
+
+
+def before_all(context):
+    if not context.config.log_capture:
+        logging.basicConfig(level=logging.DEBUG)
 
 @given('a {worker} with {amount} {commodity}')
 def step_impl(context, worker, amount, commodity):

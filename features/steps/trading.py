@@ -1,8 +1,12 @@
-import logging
 from unittest.mock import Mock
 from agent import Agent
 from bazaar import Bazaar
+import logging
 
+
+def before_all(context):
+    if not context.config.log_capture:
+        logging.basicConfig(level=logging.DEBUG)
 
 @given('a bazaar where two agents trade')
 def step_impl(context):
