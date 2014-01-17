@@ -6,11 +6,11 @@ class Strategy(object):
         wood_amount = self.inventory.get('Wood', 0)
         food_amount = self.inventory.get('Food', 0)
         if wood_amount and self.inventory.get('Tools', 0):
-            logging.info("{} is creating Food with tools".format(self.name))
+            logging.info("{} is creating 4 Food with tools".format(self.name))
             self.inventory['Wood'] = wood_amount - 1
             self.inventory['Food'] = food_amount + 4
         elif wood_amount:
-            logging.info("{} is creating Food without tools".format(self.name))
+            logging.info("{} is creating 2 Food without tools".format(self.name))
             self.inventory['Wood'] = wood_amount - 1
             self.inventory['Food'] = food_amount + 2
         else:
