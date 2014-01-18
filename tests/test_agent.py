@@ -17,6 +17,7 @@ class TestAgent(unittest.TestCase):
 
     def test_create_bid(self):
         agent = Agent()
+        agent.inventory['Coins'] = 1000
         agent.determine_purchase_quantity = MagicMock(return_value=10)
         bid = agent.create_bid('Food', 10)
         self.assertIsNotNone(bid)
