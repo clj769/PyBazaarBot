@@ -34,5 +34,5 @@ Feature: a bazaar is the marketplace where agents may trade by sending buy and
     Scenario: an agent may not buy commodities if he has no money
         Given a bazaar where two agents trade
         And the buyer has 0 Coins
-        When the buyer wants to buy 1 Wood for 1 Coins
-        Then the bazaar has not registered the bid
+        When the buyer wants to buy Wood
+        Then the bazaar has not registered a bid

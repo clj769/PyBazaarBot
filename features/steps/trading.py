@@ -76,3 +76,11 @@ def step_impl(context):
     assert len(context.bazaar.history) > 0
     trade = {'commodity': 'Wood', 'price': 7, 'amount': 2}
     assert context.bazaar.history[0] == [trade]
+
+@when('the buyer wants to buy Wood')
+def step_impl(context):
+    context.buyer.create_bid('Wood', 10)
+
+@then('the bazaar has not registered a bid')
+def step_impl(context):
+    assert len(context.bazaar.bid_book) == 0

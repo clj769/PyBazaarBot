@@ -22,7 +22,8 @@ class Bazaar(object):
         self.ask_book.append(ask)
 
     def register_bid(self, bid):
-        self.bid_book.append(bid)
+        if bid is not None:
+            self.bid_book.append(bid)
 
     def update(self):
         self.resolve_offers()

@@ -61,9 +61,10 @@ class Agent(object):
             return None
 
         ideal = self.determine_purchase_quantity(commodity)
+        max_possible_amount_to_buy = int(self.inventory.get('Coins',0) / self.price_of(commodity))
 
         bid = {'price': self.price_of(commodity),
-               'amount': min(ideal, limit),
+               'amount': min(ideal, limit, max_possible_amount_to_buy),
                'commodity': commodity,
                'buyer': self}
 
