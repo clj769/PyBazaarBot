@@ -165,6 +165,10 @@ class Agent(object):
                 self.price_beliefs[commodity]['high'] *= 0.95
                 logging.debug("{} reduces price belief interval about {} to {} - {}"
                     .format(self, commodity, self.price_beliefs[commodity]['low'], self.price_beliefs[commodity]['high']))
+                try:
+                    self.observed_trades[commodity].append(trade['price'])
+                except KeyError:
+                    self.observed_trades[commodity] = trade['price']
             else:
                 self.price_beliefs[commodity]['low'] *= 0.95
                 self.price_beliefs[commodity]['high'] *= 1.05
