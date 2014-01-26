@@ -64,7 +64,7 @@ class Agent(object):
         max_possible_amount_to_buy = int(self.inventory.get('Coins',0) / self.price_of(commodity))
 
         bid = {'price': self.price_of(commodity),
-               'amount': min(ideal, limit, max_possible_amount_to_buy),
+               'amount': int(min(ideal, limit, max_possible_amount_to_buy)),
                'commodity': commodity,
                'buyer': self}
 
@@ -77,7 +77,7 @@ class Agent(object):
         ideal = self.determine_sale_quantity(commodity)
 
         ask = {'price': self.price_of(commodity),
-               'amount': min(ideal, limit),
+               'amount': int(min(ideal, limit)),
                'commodity': commodity,
                'seller': self}
 
@@ -88,7 +88,7 @@ class Agent(object):
 
     def price_of(self, commodity):
         belief = self.price_beliefs.get(commodity, {'low': 0, 'high': 100})
-        return random.randint(belief['low'], belief['high'])
+        return random.uniform(belief['low'], belief['high'])
 
     def determine_purchase_quantity(self, commodity):
         mean = self.bazaar.get_mean_price_of(commodity)
@@ -157,6 +157,24 @@ class Agent(object):
     def fine_agent(self):
         self.inventory['Coins'] -= 2
 
+    def update_price_beliefs(self, trade, success):
+        commodity = trade['commodity']
+        try:
+            if success:
+                self.price_beliefs[commodity]['low'] *= 1.05
+                self.price_beliefs[commodity]['high'] *= 0.95
+                logging.debug("{} reduces price belief interval about {} to {} - {}"
+                    .format(self, commodity, self.price_beliefs[commodity]['low'], self.price_beliefs[commodity]['high']))
+            else:
+                self.price_beliefs[commodity]['low'] *= 0.95
+                self.price_beliefs[commodity]['high'] *= 1.05
+                logging.debug("{} enlarges price belief about {} interval from {} to {}"
+                    .format(self, commodity, self.price_beliefs[commodity]['low'], self.price_beliefs[commodity]['high']))
+
+        except KeyError:
+            price = self.bazaar.get_mean_price_of(commodity)
+            self.price_beliefs[commodity] = {'low': price/2, 'high': price*2}
+
 if __name__ == "__main__":  # pragma: no cover
     logging.basicConfig(level=logging.DEBUG)
 
@@ -183,7 +201,8 @@ if __name__ == "__main__":  # pragma: no cover
     for i in range(11):
         for agent in agents:
             agent.update()
-            logging.debug(agent.name + str(agent.inventory))
+            # logging.debug("Inventory: " + agent.name + str(agent.inventory))
+            logging.debug("Price beliefs: " + agent.name + str(agent.price_beliefs))
         logging.debug("Ask book: {}".format(b.ask_book))
         logging.debug("Bid book: {}".format(b.bid_book))
         b.update()

@@ -152,3 +152,28 @@ class TestAgent(unittest.TestCase):
         agent.inventory['Ore'] = 3
         agent.inventory['Ore'] -= 3
         self.assertEqual(agent.inventory['Ore'], 0)
+
+    def test_reduce_price_belief_range_after_successful_trade(self):
+        agent = Agent()
+        agent.price_beliefs['Food'] = {'low': 5, 'high': 25}
+        bid = {'commodity': 'Food', 'amount': 10, 'price': 6, 'buyer': agent}
+        agent.update_price_beliefs(bid, success=True)
+        self.assertAlmostEqual(agent.price_beliefs['Food']['low'], 5*1.05)
+        self.assertAlmostEqual(agent.price_beliefs['Food']['high'], 25*0.95)
+
+    def test_increase_price_belief_interval(self):
+        agent = Agent()
+        agent.price_beliefs['Wood'] = {'low': 15, 'high': 17}
+        bid = {'commodity': 'Wood', 'amount': 10, 'price': 16}
+        agent.update_price_beliefs(bid, success=False)
+        self.assertAlmostEqual(agent.price_beliefs['Wood']['low'], 15*0.95)
+        self.assertAlmostEqual(agent.price_beliefs['Wood']['high'], 17*1.05)
+
+    def test_no_price_belief(self):
+        b = Bazaar()
+        agent = Agent(bazaar=b)
+        bid = {'commodity': 'Wood', 'amount': 10, 'price': 16}
+        agent.update_price_beliefs(bid, success=False)
+        self.assertTrue(type(agent.price_beliefs['Wood']['low']) in (float, int))
+        self.assertTrue(type(agent.price_beliefs['Wood']['high']) in (float, int))
+

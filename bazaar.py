@@ -19,7 +19,8 @@ class Bazaar(object):
 
         :param ask: the ask, a dictionary with the following keys: commodity, price, amount, seller
         """
-        self.ask_book.append(ask)
+        if ask is not None:
+            self.ask_book.append(ask)
 
     def register_bid(self, bid):
         if bid is not None:
@@ -27,6 +28,14 @@ class Bazaar(object):
 
     def update(self):
         self.resolve_offers()
+        for bid in self.bid_book:
+            logging.debug("Bid: {} failed to find a seller".format(bid))
+            bid['buyer'].update_price_beliefs(bid, success=False)
+
+        for ask in self.ask_book:
+            logging.debug("Ask: {} failed to find a buyer".format(ask))
+            ask['seller'].update_price_beliefs(ask, success=False)
+
         self.bid_book = []
         self.ask_book = []
         self.current += 1
@@ -58,6 +67,10 @@ class Bazaar(object):
     def resolve_offer(self, bid, ask):
         trade_price = (bid['price'] + ask['price']) / 2.0
         trade_amount = min(bid['amount'], ask['amount'])
+
+        # TODO: move next two lines to agent?
+        ask['seller'].update_price_beliefs(ask, success=True)
+        bid['buyer'].update_price_beliefs(bid, success=True)
 
         ask['seller'].trade(bid['buyer'], bid['commodity'], trade_amount)
         bid['buyer'].pay(ask['seller'], trade_amount*trade_price)
