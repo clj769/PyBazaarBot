@@ -2,7 +2,7 @@ from unittest.mock import Mock
 from agent import Agent
 from bazaar import Bazaar
 import logging
-
+from behave import *
 
 def before_all(context):
     if not context.config.log_capture:

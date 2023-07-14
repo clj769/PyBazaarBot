@@ -14,10 +14,10 @@ Scenario Outline: a worker creates commodities
 
 Scenario Outline: a worker creates more commodities while working with tools
     Given a <worker> with <input_amount> <input_commodity>
-    and a <worker> has a tool
+    And a <worker> has a tool
     When he works
     Then a <worker> has <output_amount> <output_commodity>
-    and a <worker> has 0 <input_commodity>
+    And a <worker> has 0 <input_commodity>
 
     Examples: occupations
     | worker     | input_amount | input_commodity | output_amount | output_commodity |
